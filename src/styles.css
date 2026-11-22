@@ -222,9 +222,61 @@
 }
 @keyframes slide-up { from { transform:translateY(100%); } to { transform:translateY(0); } }
 
-[data-layout="ocean"] { --background: oklch(0.32 0.07 230); --card: oklch(0.42 0.1 220); --accent: oklch(0.5 0.12 210); --primary: oklch(0.8 0.14 190); --pad: oklch(0.88 0.08 190); --pad-foreground: oklch(0.3 0.08 230); --gradient-header: linear-gradient(90deg, oklch(0.55 0.14 220), oklch(0.7 0.14 190)); }
-[data-layout="candy"] { --background: oklch(0.35 0.1 320); --card: oklch(0.5 0.17 340); --accent: oklch(0.58 0.18 340); --primary: oklch(0.88 0.15 95); --pad: oklch(0.9 0.08 340); --pad-foreground: oklch(0.38 0.14 330); --gradient-header: linear-gradient(90deg, oklch(0.6 0.22 340), oklch(0.65 0.2 300)); }
-[data-layout="sunset"] { --background: oklch(0.3 0.06 40); --card: oklch(0.55 0.17 45); --accent: oklch(0.62 0.18 50); --primary: oklch(0.88 0.16 90); --pad: oklch(0.92 0.08 80); --pad-foreground: oklch(0.42 0.13 40); --gradient-header: linear-gradient(90deg, oklch(0.62 0.2 30), oklch(0.75 0.17 65)); }
-[data-layout="classic"] .swatch-bar, .layout-swatch[data-layout="classic"] .swatch-bar { background: linear-gradient(90deg, oklch(0.5 0.2 260), oklch(0.62 0.2 250)); }
+/* Botões com cor por função (estilo glossy das referências) */
+.role-btn {
+  background: radial-gradient(circle at 32% 26%, color-mix(in oklab, var(--role, var(--card)) 55%, white), var(--role, var(--card)) 58%, color-mix(in oklab, var(--role, var(--card)) 72%, black));
+  color: var(--role-ink, var(--foreground));
+}
+.role-star { --role: var(--role-star, var(--card)); --role-ink: var(--role-star-ink, var(--primary)); }
+.role-power { --role: var(--role-power, var(--card)); --role-ink: var(--role-power-ink, var(--destructive)); }
+.role-menu { --role: var(--role-menu, var(--card)); }
+.role-back { --role: var(--role-back, var(--card)); }
+.role-k123 { --role: var(--role-k123, var(--card)); }
+.role-exit { --role: var(--role-exit, var(--card)); }
+.role-more { --role: var(--role-more, var(--card)); }
+
+/* Rocker CH/VOL em formato de cápsula */
+.rocker { display: flex; flex-direction: column; align-items: center; gap: 0.35rem; padding: 0.4rem 0.3rem; border-radius: 9999px; background: var(--rocker-bg, transparent); color: var(--rocker-ink, var(--foreground)); box-shadow: var(--rocker-shadow, none); }
+.rocker .remote-ghost { color: inherit; }
+.rocker-ch { --rocker-bg: var(--role-ch-bg, transparent); --rocker-ink: var(--role-ch-ink, var(--foreground)); --rocker-shadow: var(--role-ch-shadow, none); }
+.rocker-vol { --rocker-bg: var(--role-vol-bg, transparent); --rocker-ink: var(--role-vol-ink, var(--foreground)); --rocker-shadow: var(--role-vol-shadow, none); }
+.rocker-ch .rocker-up, .rocker-ch .rocker-down { background: var(--role-ch-btn, transparent); }
+.rocker-vol .rocker-up { background: var(--role-vol-up, var(--role-vol-btn, transparent)); }
+.rocker-vol .rocker-down { background: var(--role-vol-down, var(--role-vol-btn, transparent)); }
+
+/* Tema Roxo: fundo preto, d-pad roxo, CH verde, Power vermelho, VOL verde/vermelho */
+[data-layout="roxo"] {
+  --background: oklch(0.16 0.01 280); --card: oklch(0.3 0.05 290); --accent: oklch(0.38 0.08 295);
+  --pad: oklch(0.48 0.22 305); --pad-foreground: oklch(0.95 0.02 300);
+  --role-ch-btn: oklch(0.62 0.19 150); --role-ch-ink: oklch(0.97 0 0);
+  --role-power: oklch(0.55 0.22 25); --role-power-ink: oklch(0.97 0 0);
+  --role-vol-up: oklch(0.6 0.2 145); --role-vol-down: oklch(0.55 0.22 25); --role-vol-ink: oklch(0.97 0 0);
+  --role-menu: oklch(0.5 0.2 270); --role-back: oklch(0.48 0.22 305);
+}
+/* Tema Verde: igual ao Roxo, com d-pad verde */
+[data-layout="verde"] {
+  --background: oklch(0.16 0.01 280); --card: oklch(0.3 0.05 290); --accent: oklch(0.38 0.08 295);
+  --pad: oklch(0.5 0.16 160); --pad-foreground: oklch(0.95 0.02 160);
+  --role-ch-btn: oklch(0.62 0.19 150); --role-ch-ink: oklch(0.97 0 0);
+  --role-power: oklch(0.55 0.22 25); --role-power-ink: oklch(0.97 0 0);
+  --role-vol-up: oklch(0.6 0.2 145); --role-vol-down: oklch(0.55 0.22 25); --role-vol-ink: oklch(0.97 0 0);
+  --role-menu: oklch(0.5 0.2 270); --role-back: oklch(0.5 0.2 270);
+}
+/* Tema Colorido: cápsulas laranja (CH) e amarela (VOL), estrela rosa, d-pad verde */
+[data-layout="colorido"] {
+  --background: oklch(0.15 0 0); --card: oklch(0.3 0.02 280); --accent: oklch(0.38 0.05 290);
+  --gradient-header: linear-gradient(90deg, oklch(0.55 0.18 300), oklch(0.6 0.15 280));
+  --pad: oklch(0.5 0.16 160); --pad-foreground: oklch(0.95 0.02 160);
+  --role-ch-bg: oklch(0.68 0.17 60); --role-ch-ink: oklch(0.32 0.08 60); --role-ch-shadow: var(--shadow-btn);
+  --role-star: oklch(0.75 0.12 350); --role-star-ink: oklch(0.35 0.1 350);
+  --role-power: oklch(0.55 0.22 25); --role-power-ink: oklch(0.97 0 0);
+  --role-vol-bg: oklch(0.75 0.15 95); --role-vol-ink: oklch(0.32 0.08 95); --role-vol-shadow: var(--shadow-btn);
+  --role-menu: oklch(0.5 0.2 270); --role-back: oklch(0.5 0.2 270);
+  --role-k123: oklch(0.72 0.12 20); --role-exit: oklch(0.92 0 0); --role-exit-ink: oklch(0.4 0 0); --role-more: oklch(0.55 0.18 145);
+}
+/* D-pad com brilho */
+.dpad { background: radial-gradient(circle at 35% 28%, color-mix(in oklab, var(--pad) 70%, white), var(--pad) 60%, color-mix(in oklab, var(--pad) 75%, black)); }
+
 .layout-swatch .swatch-bar { background: var(--gradient-header); }
+.layout-swatch .swatch-dot { background: var(--pad); }
 .layout-swatch { background: var(--card); color: var(--foreground); }

@@ -5,9 +5,9 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 
 const LAYOUTS = [
   { id: "classic", name: "Clássico" },
-  { id: "ocean", name: "Oceano" },
-  { id: "candy", name: "Doce" },
-  { id: "sunset", name: "Pôr do sol" },
+  { id: "roxo", name: "Roxo" },
+  { id: "verde", name: "Verde" },
+  { id: "colorido", name: "Colorido" },
 ] as const;
 type LayoutId = (typeof LAYOUTS)[number]["id"];
 import appIcon from "@/assets/remote-192.png.asset.json";
@@ -56,26 +56,23 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-function Round({ children, label, size = "md", tone = "default", onClick }: {
-  children: ReactNode; label: string; size?: "md" | "lg"; tone?: "default" | "power" | "star"; onClick: () => void;
+function Round({ children, label, size = "md", role, onClick }: {
+  children: ReactNode; label: string; size?: "md" | "lg"; role?: string; onClick: () => void;
 }) {
   const s = size === "lg" ? "remote-large" : "remote-medium";
-  const t = tone === "power" ? "text-destructive" : tone === "star" ? "text-primary" : "text-foreground/80";
   return (
-    <Button variant="remote" size="remote" aria-label={label} onClick={onClick} className={`remote-btn ${s} ${t}`}>
+    <Button variant="remote" size="remote" aria-label={label} onClick={onClick} className={`remote-btn ${s} ${role ? `role-btn role-${role}` : "text-foreground/80"}`}>
       {children}
     </Button>
   );
 }
 
-function Rocker({ label, onUp, onDown, up, down }: { label: string; onUp: () => void; onDown: () => void; up: ReactNode; down: ReactNode }) {
+function Rocker({ label, tone, onUp, onDown, up, down }: { label: string; tone: "ch" | "vol"; onUp: () => void; onDown: () => void; up: ReactNode; down: ReactNode }) {
   return (
-    <div className="flex flex-col items-center gap-2 text-foreground/90">
-      <Button variant="remote" size="remote" aria-label={`${label} +`} onClick={onUp} className="remote-ghost">{up}</Button>
-      <span className="h-px w-6 bg-foreground/50" />
-      <span className="text-base">{label}</span>
-      <span className="h-px w-6 bg-foreground/50" />
-      <Button variant="remote" size="remote" aria-label={`${label} -`} onClick={onDown} className="remote-ghost">{down}</Button>
+    <div className={`rocker rocker-${tone}`}>
+      <Button variant="remote" size="remote" aria-label={`${label} +`} onClick={onUp} className="remote-ghost rocker-up">{up}</Button>
+      <span className="text-base font-semibold">{label}</span>
+      <Button variant="remote" size="remote" aria-label={`${label} -`} onClick={onDown} className="remote-ghost rocker-down">{down}</Button>
     </div>
   );
 }
@@ -175,7 +172,7 @@ function Index() {
                   {LAYOUTS.map((l) => (
                     <button key={l.id} type="button" onClick={() => chooseLayout(l.id)} aria-pressed={layout === l.id}
                       className={`layout-swatch rounded-lg border-2 p-2 text-left text-sm ${layout === l.id ? "border-primary" : "border-transparent"}`} data-layout={l.id}>
-                      <span className="swatch-bar mb-2 block h-8 rounded-md" />{l.name}
+                      <span className="swatch-bar mb-2 flex h-8 items-center justify-center rounded-md"><span className="swatch-dot block size-5 rounded-full" /></span>{l.name}
                     </button>
                   ))}
                 </div>
@@ -189,9 +186,9 @@ function Index() {
 
       <main className="remote-main relative flex flex-1 flex-col">
         <div className="remote-top grid grid-cols-3 items-start">
-          <div><Rocker label="CH" onUp={() => press("CHANNEL_UP")} onDown={() => press("CHANNEL_DOWN")} up={<ChevronUp />} down={<ChevronDown />} /></div>
-          <div className="flex justify-center"><Round size="lg" tone="star" label="Favoritos" onClick={() => press("FAVORITES")}><Star className="h-10 w-10 fill-current" /></Round></div>
-          <div className="remote-power flex justify-end"><Round tone="power" label="Power" onClick={() => press("POWER")}><Power className="h-8 w-8" /></Round></div>
+          <div><Rocker label="CH" tone="ch" onUp={() => press("CHANNEL_UP")} onDown={() => press("CHANNEL_DOWN")} up={<ChevronUp />} down={<ChevronDown />} /></div>
+          <div className="flex justify-center"><Round size="lg" role="star" label="Favoritos" onClick={() => press("FAVORITES")}><Star className="h-10 w-10 fill-current" /></Round></div>
+          <div className="remote-power flex justify-end"><Round role="power" label="Power" onClick={() => press("POWER")}><Power className="h-8 w-8" /></Round></div>
         </div>
 
         <div className="remote-navigation grid grid-cols-[minmax(0,1fr)_auto] items-center gap-4">
@@ -207,19 +204,19 @@ function Index() {
             <Button variant="remote" size="remote" aria-label="OK" onClick={() => press("OK")} className="dpad-ok">OK</Button>
           </div>
           <div className="flex flex-col items-center gap-2">
-            <Rocker label="VOL" onUp={() => press("VOLUME_UP")} onDown={() => press("VOLUME_DOWN")} up={<Plus />} down={<Minus />} />
+            <Rocker label="VOL" tone="vol" onUp={() => press("VOLUME_UP")} onDown={() => press("VOLUME_DOWN")} up={<Plus />} down={<Minus />} />
             <Button variant="remote" size="remote" aria-label="Mute" onClick={() => press("MUTE")} className="remote-ghost"><VolumeX /></Button>
           </div>
         </div>
 
         <div className="remote-menu flex justify-center gap-12">
-          <Round label="Menu" onClick={() => press("MENU")}><span className="text-lg">Menu</span></Round>
-          <Round label="Voltar" onClick={() => press("BACK")}><Undo2 /></Round>
+          <Round role="menu" label="Menu" onClick={() => press("MENU")}><span className="text-lg">Menu</span></Round>
+          <Round role="back" label="Voltar" onClick={() => press("BACK")}><Undo2 /></Round>
         </div>
         <div className="remote-bottom flex justify-between">
-          <Round label="Teclado numérico" onClick={() => setPad(true)}><span className="text-lg">123</span></Round>
-          <Round label="Sair" onClick={() => press("EXIT")}><span className="text-lg">Sair</span></Round>
-          <Round label="Mais opções" onClick={() => setMore(true)}><MoreHorizontal /></Round>
+          <Round role="k123" label="Teclado numérico" onClick={() => setPad(true)}><span className="text-lg">123</span></Round>
+          <Round role="exit" label="Sair" onClick={() => press("EXIT")}><span className="text-lg">Sair</span></Round>
+          <Round role="more" label="Mais opções" onClick={() => setMore(true)}><MoreHorizontal /></Round>
         </div>
 
         <p aria-live="polite" className="remote-feedback text-center text-xs text-muted-foreground">
