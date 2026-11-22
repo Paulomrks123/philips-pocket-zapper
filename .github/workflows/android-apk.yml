@@ -5,8 +5,14 @@ on:
   push:
     paths:
       - "android/**"
-      - "src/routes/index.tsx"
-      - "src/styles.css"
+      - "src/**"
+      - "public/**"
+      - "index.html"
+      - "package.json"
+      - "package-lock.json"
+      - "pnpm-lock.yaml"
+      - "yarn.lock"
+      - "vite.config.*"
       - ".github/workflows/android-apk.yml"
 
 permissions:
