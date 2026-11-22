@@ -33,8 +33,7 @@ const LOCAL_BRIDGE = "http://127.0.0.1:8765";
 async function callLocalBridge<T>(path: string, body?: Record<string, string>): Promise<T> {
   const response = await fetch(`${LOCAL_BRIDGE}${path}`, {
     method: body ? "POST" : "GET",
-    headers: body ? { "Content-Type": "application/json" } : undefined,
-    body: body ? JSON.stringify(body) : undefined,
+    ...(body ? { headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) } : {}),
     mode: "cors",
     cache: "no-store",
     signal: AbortSignal.timeout(12000),
