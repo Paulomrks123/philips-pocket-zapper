@@ -1,10 +1,19 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+
+const LAYOUTS = [
+  { id: "classic", name: "Clássico" },
+  { id: "ocean", name: "Oceano" },
+  { id: "candy", name: "Doce" },
+  { id: "sunset", name: "Pôr do sol" },
+] as const;
+type LayoutId = (typeof LAYOUTS)[number]["id"];
 import appIcon from "@/assets/remote-192.png.asset.json";
 import {
   ChevronUp, ChevronDown, ChevronLeft, ChevronRight, Star, Power, Plus, Minus,
-  Undo2, MoreHorizontal, VolumeX, X, Delete, Check, AlertTriangle, Wifi,
+  Undo2, MoreHorizontal, VolumeX, X, Delete, Check, AlertTriangle, Wifi, Menu as MenuIcon,
 } from "lucide-react";
 
 declare global {
@@ -80,6 +89,13 @@ function Index() {
   const [irStatus, setIrStatus] = useState<IrStatus | null>(null);
   const [tvIp, setTvIp] = useState("192.168.1.2");
   const [syncStatus, setSyncStatus] = useState<string | null>(null);
+  const [layout, setLayout] = useState<LayoutId>("classic");
+
+  useEffect(() => {
+    const saved = localStorage.getItem("remote-layout");
+    if (saved && LAYOUTS.some((l) => l.id === saved)) setLayout(saved as LayoutId);
+  }, []);
+  const chooseLayout = (id: LayoutId) => { setLayout(id); localStorage.setItem("remote-layout", id); };
 
   useEffect(() => {
     let active = true;
@@ -135,29 +151,41 @@ function Index() {
   };
 
   return (
-    <div className="remote-app mx-auto flex max-w-md flex-col bg-background">
-      <header className="remote-header bg-[image:var(--gradient-header)] px-4 pb-2 text-primary-foreground">
-        <div className="flex items-center justify-center gap-2">
-          <img src={appIcon.url} width={32} height={32} alt="" className="size-8 shrink-0 rounded-md" />
-          <h1 className="text-lg font-semibold">Philips TV 50PUG6654/78</h1>
-        </div>
-        <div className="mt-2 flex items-center justify-center gap-1 rounded-md bg-background/20 px-2 py-1 text-center text-xs">
-          <AlertTriangle className="h-3.5 w-3.5 shrink-0" /> {irStatus ? irStatus.message : "Modo web: sem acesso direto ao infravermelho"}
-        </div>
-        <div className="mt-3 flex gap-2">
-          <input
-            aria-label="Endereço IP da TV"
-            value={tvIp}
-            onChange={(event) => setTvIp(event.target.value)}
-            placeholder="IP da TV (192.168.1.2)"
-            inputMode="decimal"
-            className="min-w-0 flex-1 rounded-lg border border-primary-foreground/30 bg-background/15 px-3 py-2 text-sm text-primary-foreground placeholder:text-primary-foreground/65 outline-none focus:ring-2 focus:ring-primary-foreground/50"
-          />
-          <Button variant="secondary" onClick={syncTv} className="shrink-0 gap-2">
-            <Wifi className="h-4 w-4" /> Sincronizar
-          </Button>
-        </div>
-        {syncStatus && <p role="status" className="mt-2 text-center text-xs text-primary-foreground">{syncStatus}</p>}
+    <div data-layout={layout} className="remote-app mx-auto flex max-w-md flex-col bg-background">
+      <header className="remote-header flex items-center gap-2 bg-[image:var(--gradient-header)] px-3 pb-2 text-primary-foreground">
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button variant="remote" size="remote" aria-label="Abrir menu" className="remote-ghost"><MenuIcon /></Button>
+          </SheetTrigger>
+          <SheetContent side="left" className="w-[85vw] max-w-sm overflow-y-auto">
+            <SheetHeader><SheetTitle>Configurações</SheetTitle></SheetHeader>
+            <div className="mt-4 flex flex-col gap-5 px-4 pb-6">
+              <div className="flex items-start gap-2 rounded-md bg-muted p-3 text-xs">
+                <AlertTriangle className="h-4 w-4 shrink-0" /> {irStatus ? irStatus.message : "Modo web: sem acesso direto ao infravermelho"}
+              </div>
+              <div className="flex flex-col gap-2">
+                <span className="text-sm font-semibold">Conectar à TV</span>
+                <input aria-label="Endereço IP da TV" value={tvIp} onChange={(e) => setTvIp(e.target.value)} placeholder="IP da TV (192.168.1.2)" inputMode="decimal"
+                  className="rounded-lg border border-input bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring" />
+                <Button onClick={syncTv} className="gap-2"><Wifi className="h-4 w-4" /> Sincronizar</Button>
+                {syncStatus && <p role="status" className="text-xs text-muted-foreground">{syncStatus}</p>}
+              </div>
+              <div className="flex flex-col gap-2">
+                <span className="text-sm font-semibold">Layout</span>
+                <div className="grid grid-cols-2 gap-2">
+                  {LAYOUTS.map((l) => (
+                    <button key={l.id} type="button" onClick={() => chooseLayout(l.id)} aria-pressed={layout === l.id}
+                      className={`layout-swatch rounded-lg border-2 p-2 text-left text-sm ${layout === l.id ? "border-primary" : "border-transparent"}`} data-layout={l.id}>
+                      <span className="swatch-bar mb-2 block h-8 rounded-md" />{l.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </SheetContent>
+        </Sheet>
+        <img src={appIcon.url} width={24} height={24} alt="" className="size-6 shrink-0 rounded-md" />
+        <h1 className="truncate text-base font-semibold">Philips TV 50PUG6654/78</h1>
       </header>
 
       <main className="remote-main relative flex flex-1 flex-col">

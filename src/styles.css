@@ -221,3 +221,10 @@
   *, *::before, *::after { animation:none !important; transition:none !important; }
 }
 @keyframes slide-up { from { transform:translateY(100%); } to { transform:translateY(0); } }
+
+[data-layout="ocean"] { --background: oklch(0.32 0.07 230); --card: oklch(0.42 0.1 220); --accent: oklch(0.5 0.12 210); --primary: oklch(0.8 0.14 190); --pad: oklch(0.88 0.08 190); --pad-foreground: oklch(0.3 0.08 230); --gradient-header: linear-gradient(90deg, oklch(0.55 0.14 220), oklch(0.7 0.14 190)); }
+[data-layout="candy"] { --background: oklch(0.35 0.1 320); --card: oklch(0.5 0.17 340); --accent: oklch(0.58 0.18 340); --primary: oklch(0.88 0.15 95); --pad: oklch(0.9 0.08 340); --pad-foreground: oklch(0.38 0.14 330); --gradient-header: linear-gradient(90deg, oklch(0.6 0.22 340), oklch(0.65 0.2 300)); }
+[data-layout="sunset"] { --background: oklch(0.3 0.06 40); --card: oklch(0.55 0.17 45); --accent: oklch(0.62 0.18 50); --primary: oklch(0.88 0.16 90); --pad: oklch(0.92 0.08 80); --pad-foreground: oklch(0.42 0.13 40); --gradient-header: linear-gradient(90deg, oklch(0.62 0.2 30), oklch(0.75 0.17 65)); }
+[data-layout="classic"] .swatch-bar, .layout-swatch[data-layout="classic"] .swatch-bar { background: linear-gradient(90deg, oklch(0.5 0.2 260), oklch(0.62 0.2 250)); }
+.layout-swatch .swatch-bar { background: var(--gradient-header); }
+.layout-swatch { background: var(--card); color: var(--foreground); }
