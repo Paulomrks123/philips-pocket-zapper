@@ -175,39 +175,15 @@ function Index() {
         }
       }}
     >
-      <header className="remote-header bg-[image:var(--gradient-header)] px-4 pb-2 text-primary-foreground">
+      <header className="remote-header bg-[image:var(--gradient-header)] px-4 py-3 text-primary-foreground">
         <div className="flex items-center justify-between gap-2">
           <span className="w-9" />
           <div className="flex items-center justify-center gap-2">
-          <img src={appIcon.url} width={32} height={32} alt="" className="size-8 shrink-0 rounded-md" />
-          <h1 className="text-lg font-semibold">Philips TV 50PUG6654/78</h1>
+            <img src={appIcon.url} width={32} height={32} alt="" className="size-8 shrink-0 rounded-md" />
+            <h1 className="text-lg font-semibold">Philips TV 50PUG6654/78</h1>
           </div>
           <Button variant="ghost" size="icon" aria-label="Abrir menu" onClick={() => setMenuOpen(true)} className="text-primary-foreground"><Menu /></Button>
         </div>
-        <div className="mt-2 flex items-center justify-center gap-1 rounded-md bg-background/20 px-2 py-1 text-center text-xs">
-          <AlertTriangle className="h-3.5 w-3.5 shrink-0" /> {irStatus ? irStatus.message : "Modo web: sem acesso direto ao infravermelho"}
-        </div>
-        <div className="mt-3 flex gap-2">
-          <input
-            aria-label="Endereço IP da TV"
-            value={tvIp}
-            onChange={(event) => setTvIp(event.target.value)}
-            placeholder="IP da TV (192.168.1.2)"
-            inputMode="decimal"
-            className="min-w-0 flex-1 rounded-lg border border-primary-foreground/30 bg-background/15 px-3 py-2 text-sm text-primary-foreground placeholder:text-primary-foreground/65 outline-none focus:ring-2 focus:ring-primary-foreground/50"
-          />
-          <Button variant="secondary" onClick={syncTv} className="shrink-0 gap-2">
-            <Wifi className="h-4 w-4" /> Sincronizar
-          </Button>
-        </div>
-        <div className="mt-2 flex gap-2">
-          <input aria-label="Endereço MAC da TV para ligar em standby" value={tvMac}
-            onChange={(event) => setTvMac(event.target.value)}
-            placeholder="MAC da TV (necessário para ligar em standby)"
-            className="min-w-0 flex-1 rounded-lg border border-primary-foreground/30 bg-background/15 px-3 py-2 text-xs text-primary-foreground placeholder:text-primary-foreground/65 outline-none focus:ring-2 focus:ring-primary-foreground/50" />
-        </div>
-        <p className="mt-1 text-[10px] text-primary-foreground/75">Para ligar a TV em standby pela rede, ative Wake-on-LAN na TV e informe o MAC. Sem isso, a rede SAPHI não garante o despertar.</p>
-        {syncStatus && <p role="status" className="mt-2 text-center text-xs text-primary-foreground">{syncStatus}</p>}
       </header>
 
       <main className="remote-main relative flex flex-1 flex-col">
@@ -258,18 +234,44 @@ function Index() {
               <Button variant="remote" size="remote" aria-label="Fechar" onClick={() => { setPad(false); setMore(false); setMenuOpen(false); }} className="remote-ghost"><X /></Button>
             </div>
             {menuOpen ? (
-              <div className="grid grid-cols-1 gap-3">
-                <p className="text-sm text-muted-foreground">Escolha o tamanho dos botões. Sua preferência fica salva neste aparelho.</p>
-                {[
-                  { id: "comfortable", label: "Confortável", detail: "Botões maiores e mais espaço" },
-                  { id: "compact", label: "Compacto", detail: "Controles menores" },
-                  { id: "minimal", label: "Minimalista", detail: "Interface reduzida" },
-                ].map((option) => (
-                  <Button key={option.id} variant={layout === option.id ? "secondary" : "outline"} onClick={() => { setLayout(option.id as typeof layout); setMenuOpen(false); }} className="h-auto justify-between py-3">
-                    <span className="flex flex-col items-start"><span>{option.label}</span><span className="text-xs text-muted-foreground">{option.detail}</span></span>
-                    {layout === option.id && <Check className="h-4 w-4" />}
-                  </Button>
-                ))}
+              <div className="grid grid-cols-1 gap-4">
+                <section className="space-y-3">
+                  <h2 className="text-base font-semibold">Conexão Wi-Fi com a TV</h2>
+                  <div className="rounded-lg bg-muted/60 p-3 text-sm text-muted-foreground">
+                    {irStatus ? irStatus.message : "Verificando conexão com a TV..."}
+                    <p className="mt-1 text-xs">A conexão e os comandos de rede são feitos pelo aplicativo auxiliar Android. Mantenha-o instalado e ativo.</p>
+                  </div>
+                  <label className="block space-y-1 text-sm">
+                    <span>Endereço IP da TV</span>
+                    <input aria-label="Endereço IP da TV" value={tvIp} onChange={(event) => setTvIp(event.target.value)}
+                      placeholder="192.168.1.2" inputMode="decimal"
+                      className="w-full rounded-lg border bg-background px-3 py-2 text-foreground outline-none focus:ring-2 focus:ring-primary" />
+                  </label>
+                  <label className="block space-y-1 text-sm">
+                    <span>MAC da TV (para ligar em standby)</span>
+                    <input aria-label="Endereço MAC da TV para ligar em standby" value={tvMac} onChange={(event) => setTvMac(event.target.value)}
+                      placeholder="AA:BB:CC:DD:EE:FF"
+                      className="w-full rounded-lg border bg-background px-3 py-2 text-foreground outline-none focus:ring-2 focus:ring-primary" />
+                  </label>
+                  <Button onClick={syncTv} className="w-full gap-2"><Wifi className="h-4 w-4" /> Sincronizar por Wi-Fi</Button>
+                  <p className="text-xs text-muted-foreground">Para ligar a TV em standby pela rede, ela precisa aceitar Wake-on-Wi-Fi/Wake-on-LAN e ter o MAC correto cadastrado. A SAPHI pode não responder enquanto a TV estiver desligada.</p>
+                  {syncStatus && <p role="status" className="rounded-lg bg-muted p-2 text-xs">{syncStatus}</p>}
+                </section>
+                <div className="h-px bg-border" />
+                <section className="grid grid-cols-1 gap-3">
+                  <h2 className="text-base font-semibold">Tamanho do controle</h2>
+                  <p className="text-sm text-muted-foreground">Escolha o tamanho dos botões. Sua preferência fica salva neste aparelho.</p>
+                  {[
+                    { id: "comfortable", label: "Confortável", detail: "Botões maiores e mais espaço" },
+                    { id: "compact", label: "Compacto", detail: "Controles menores" },
+                    { id: "minimal", label: "Minimalista", detail: "Interface reduzida" },
+                  ].map((option) => (
+                    <Button key={option.id} variant={layout === option.id ? "secondary" : "outline"} onClick={() => setLayout(option.id as typeof layout)} className="h-auto justify-between py-3">
+                      <span className="flex flex-col items-start"><span>{option.label}</span><span className="text-xs text-muted-foreground">{option.detail}</span></span>
+                      {layout === option.id && <Check className="h-4 w-4" />}
+                    </Button>
+                  ))}
+                </section>
               </div>
             ) : pad ? (
               <div className="grid grid-cols-3 gap-3">
