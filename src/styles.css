@@ -237,3 +237,12 @@
 .layout-minimal .dpad { max-width: 168px; }
 .layout-minimal .remote-menu, .layout-minimal .remote-bottom { margin-top: .5rem; gap: 1.25rem; }
 .layout-minimal .remote-feedback { margin-top: .5rem; }
+
+
+/* Power button raised consistently across all remote layouts */
+.remote-power { padding-top: 28px; }
+.layout-compact .remote-power { padding-top: 20px; }
+.layout-minimal .remote-power { padding-top: 14px; }
+@media (orientation:landscape) and (max-height:600px) {
+  .remote-power { padding-top: 12px; }
+}
