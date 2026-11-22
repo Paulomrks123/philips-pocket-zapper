@@ -26,21 +26,9 @@ import java.io.OutputStream
 import java.nio.charset.StandardCharsets
 
 class MainActivity : Activity() {
-    // Philips TV RC6 mode 0, custom/address 0x00, 36 kHz.
-    // Key values follow Philips RC6 command tables for this TV family.
-    private val commands = mapOf(
-        "POWER" to 0x0C, "MUTE" to 0x0D, "INFO" to 0x0F,
-        "VOLUME_UP" to 0x10, "VOLUME_DOWN" to 0x11,
-        "CHANNEL_UP" to 0x20, "CHANNEL_DOWN" to 0x21,
-        "SOURCE" to 0x38, "AV" to 0x38, "HDMI" to 0x38,
-        "MENU" to 0x54, "UP" to 0x58, "DOWN" to 0x59,
-        "LEFT" to 0x5A, "RIGHT" to 0x5B, "OK" to 0x5C,
-        "BACK" to 0x41, "EXIT" to 0x41, "TV" to 0x54,
-        "FAVORITES" to 0x3B, "GUIDE" to 0xCC,
-        "NUM_0" to 0x00, "NUM_1" to 0x01, "NUM_2" to 0x02,
-        "NUM_3" to 0x03, "NUM_4" to 0x04, "NUM_5" to 0x05,
-        "NUM_6" to 0x06, "NUM_7" to 0x07, "NUM_8" to 0x08, "NUM_9" to 0x09
-    )
+    // No Philips 50PUG6654/78 IR capture has been validated yet.
+    // Keep this map empty: never transmit guessed RC5/RC6 codes as if verified.
+    private val commands = emptyMap<String, Int>()
     @Volatile private var rc6Toggle = false
     private var ir: ConsumerIrManager? = null
     @Volatile private var tvHost: String? = null
